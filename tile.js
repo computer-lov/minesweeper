@@ -22,44 +22,9 @@ class Tile {
         } // else - tile is cleared - nothing to do :}
     }
     
-    // clears tile, should end game if mine is discovered
+    // sets cleared variable to true
     clearTile() {
-        // check if mine
-        if (this.isMine) {
-            this.adjustTileSymbol('*');
-            return false;
-        }
-        // determine number of adjacent mines
-        else {
-            this.adjacentMines = findAdjacentMines(this.coordinates);
-            this.adjustTileSymbol(this.adjacentMines.toString());
-            return true;
-        }
-    }
-
-    // overwrites tile symbol displayed on grid
-    // _ - uncleared tile 
-    // ! - flagged tile
-    // 123 etc. - cleared tile that displays number of adjacent mines
-    // * - display mine (GAME OVER!!!)
-    adjustTileSymbol(newSymbol) {
-        this.currSymbol = newSymbol;
-    }
-
-    // determines number of adjacent mines, should return an integer
-    findAdjacentMines(coordinates) {
-        let row = coordinates[0];
-        let col = coordinates[1];
-        
-        // check left
-
-        // check left upper corner
-        
-        // check above 
-
-
-        
-
+        this.cleared = true;
     }
 
 }
