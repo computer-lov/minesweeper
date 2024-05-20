@@ -1,0 +1,52 @@
+// minesweeper project
+
+    // REQUIREMENTS:
+    // implement behaviour correctly
+    // implement in terminal
+    // input validation
+    // take oop approach
+        // grid class
+        // tile class
+
+    // RULES:
+    // flagging - flag tile you think has a mine on it
+    // loss - when user clears tile that has a mine on it
+    // win - when user flags all mines correctly and clears all other tiles
+    // when tile is cleared successfully it will show number of mines next to it
+    
+    // FOR FURTHER CONSIDERATION:
+    // should user be able to lose on first guess?
+    // how will I randomized mines on grid?
+    // how do I ensure a grid is valid?
+    // how do I allow user to add/remove flags?
+    // what dimensions should grid have? 8 x 8 or 16 x 16?
+    // should I randomly clear tiles for user in the beginning?
+
+    // GRID DESIGN
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+
+    // LEGION
+    ! - flag
+    * - mine
+    1, 2, 3 for numbers
+
+    // EXAMPLE
+    _ _ _ _ _ _ _ _
+    _ 1 1 1 _ _ _ _
+    _ 1 ! 1 1 1 _ _
+    ! 2 1 2 ! 1 _ _
+    _ _ _ _ 1 _ _ _
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+
+
