@@ -8,7 +8,6 @@ class Tile {
         this.isMine = false;
         this.adjacentMines = 0;
         this.currSymbol = '_';
-        this.adjacentTiles; // need to figure out how to reference adjacent tiles
     }
 
     // toggles tile between flagged/unflagged
@@ -22,11 +21,25 @@ class Tile {
         } // else - tile is cleared - nothing to do :}
     }
     
-    // sets cleared variable to true
+    // clears tile
     clearTile() {
         this.cleared = true;
     }
 
+    // plants mine
+    plantMine() {
+        this.isMine = true;
+    }
+
+    // set adjacent mines
+    setAdjMines(adjMines) {
+        this.adjacentMines = adjMines;
+    }
+
+    // update symol
+    updateSymbol(newSymbol) {
+        this.currSymbol = newSymbol;
+    }
 }
 
 module.exports = Tile;
