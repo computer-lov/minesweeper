@@ -1,23 +1,23 @@
 // tile.js
 
 class Tile {
-    constructor () {
-        this.coordinates = [-1, -1];
+    constructor (row, col) {
+        this.coordinates = [row, col];
         this.cleared = false;
         this.flagged = false;
         this.isMine = false;
         this.adjacentMines = 0;
-        this.currSymbol = '_';
+        this.currSymbol = "_";
     }
 
     // toggles tile between flagged/unflagged
     toggleFlag() {
         if (!this.cleared && this.flagged) {
             this.flagged = false;
-            this.adjustTileSymbol('_');
+            this.updateSymbol("_");
         } else if (!this.cleared && !this.flagged) {
             this.flagged = true;
-            this.adjustTileSymbol('!');
+            this.updateSymbol("!");
         } // else - tile is cleared - nothing to do :}
     }
     
@@ -31,12 +31,27 @@ class Tile {
         this.isMine = true;
     }
 
+    // get mine status 
+    getMineStatus() {
+        return this.isMine;
+    }
+
     // set adjacent mines
     setAdjMines(adjMines) {
         this.adjacentMines = adjMines;
     }
 
-    // update symol
+    // set adjacent mines
+    getAdjMines() {
+        return this.adjacentMines;
+    }
+
+    // gets current symbol from tile
+    getCurrSymbol() {
+        return this.currSymbol;
+    }
+
+    // update symbol
     updateSymbol(newSymbol) {
         this.currSymbol = newSymbol;
     }
