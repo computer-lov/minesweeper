@@ -4,10 +4,10 @@ const Tile = require('./tile');
 const math = require('mathjs');
 
 class Grid extends Tile {
-    constructor() {
+    constructor(size) {
         super();
         this.grid = [];
-        this.size = 64;
+        this.size = size;
         this.side = math.sqrt(this.size);
     }
 
@@ -21,17 +21,12 @@ class Grid extends Tile {
         }
     };
 
-    getRandInt(min, max) {
-        return math.floor(Math.random() * (max - min)) + min;
-    }
-
     // randmomize grid mines, number of mines to be planted must be provided
-    randomizeGridMines(numMines) {
+    randomizeGridMines(numMines, initCoords) {
         while (numMines > 0) {
-            let randRow = this.getRandInt(0, this.side);
-            let randCol = this.getRandInt(0, this.side);
-
-            if (!this.grid[randRow][randCol].getMineStatus()) {
+            let randRow = math.floor(Math.random() * this.side);
+            let randCol = math.floor(Math.random() * this.side);
+            if (!this.grid[randRow][randCol].getMineStatus() && !(initCoords[0] == randRow && initCoords[1] == randCol)) {
                 this.grid[randRow][randCol].plantMine();
                 numMines--;
             }
@@ -40,6 +35,7 @@ class Grid extends Tile {
 
     // prints out grid
     displayGrid() {
+        console.log("-------CURRENT GRID--------");
         for (let row = 0; row < this.side; row++) {
             let tempArr = []
             for (let col = 0; col < this.side; col++) {
@@ -47,10 +43,12 @@ class Grid extends Tile {
             }
             console.log(tempArr.join(' '));
         }
+        console.log();
     };
 
     // determines number of adjacent mines, should return an integer
-    // update this to be more efficent
+    // update this to be more efficent 
+    // CAUSES CRASH AROUND BOUNDARIES
     findAdjacentMines(row, col) {
         let adjMineCount = 0;
         // check left lower corner
@@ -71,21 +69,28 @@ class Grid extends Tile {
         if (row+1 < this.side && this.grid[row+1][col].getMineStatus()) adjMineCount++;
         
         this.grid[row][col].setAdjMines(adjMineCount);
+        this.grid[row][col].updateSymbol(this.grid[row][col].getAdjMines());
     }
 
     // attempts to clear tile, returns true if successful
     attemptClearTile(row, col) {
         // check if mine
         if (this.grid[row][col].getMineStatus()) {
+            this.grid[row][col].clearTile();
             this.grid[row][col].updateSymbol("*");
             return false;
         }
         // determine number of adjacent mines
         else {
+            this.grid[row][col].clearTile();
             this.findAdjacentMines(row, col);
-            this.grid[row][col].updateSymbol(this.grid[row][col].getAdjMines());
             return true;
         }
+    }
+    
+    // get specific tile
+    getTile(row, col) {
+        return this.grid[row][col];
     }
 
     // clears grid
