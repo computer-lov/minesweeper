@@ -86,17 +86,17 @@ function firstMove(grid, gameParams) {
     grid.displayGrid();
     let initCrds = getCrds();
     grid.randomizeGridMines(gameParams[1], initCrds);
-    grid.findAdjacentMines(initCrds[0], initCrds[1]);
+    grid.attemptClearTile(initCrds[0], initCrds[1]);
     grid.displayGrid();
 }
 
 function flagAction(grid, crds, flagsRemaining) {
     let currTile = grid.getTile(crds[0], crds[1]);
-    if ((flagsRemaining > 0 || currTile.flagged) && !currTile.cleared) {
+    if ((flagsRemaining > 0 || currTile.getFlagStatus()) && !currTile.getClearanceStatus()) {
         currTile.toggleFlag();
-        if (currTile.flagged) flagsRemaining--;
+        if (currTile.getFlagStatus()) flagsRemaining--;
         else flagsRemaining++;
-    } else if (currTile.cleared){
+    } else if (currTile.getClearanceStatus()){
         console.log("\nCannot place flag on cleared tile\n");
     } else {
         console.log("Out of flags :(\nMust remove an existing flag before placing new one\n");
@@ -107,9 +107,10 @@ function flagAction(grid, crds, flagsRemaining) {
 
 function clearAction(grid, crds) {
     let currTile = grid.getTile(crds[0], crds[1]);
-    if (currTile.cleared) {
+    if (currTile.getClearanceStatus()) {
         console.log("\nTile already cleared\n");
-        return true;
+        grid.displayGrid();
+        return false;
     } else {
         let attempt = grid.attemptClearTile(crds[0], crds[1]);
         grid.displayGrid();
@@ -135,15 +136,16 @@ function game(grid, gameParams) {
 
     let gameOver = false;
     while (!gameOver) {
-        console.log("Flags Remaining: " + flagsRemaining);
-        let currAction = displayActions();
-        let crds = getCrds(gameParams[3]);
-        
-        if (currAction == "F") flagsRemaining = flagAction(grid, crds, flagsRemaining);
-        else if (currAction == "C") gameOver = clearAction(grid, crds);
-        else if (currAction == "X") gameOver = quit();
-        
         if (grid.victory()) gameOver = true;
+        else {
+            console.log("Flags Remaining: " + flagsRemaining);
+            let currAction = displayActions();
+            let crds = getCrds(gameParams[3]);
+            
+            if (currAction == "F") flagsRemaining = flagAction(grid, crds, flagsRemaining);
+            else if (currAction == "C") gameOver = clearAction(grid, crds);
+            else if (currAction == "X") gameOver = quit();
+        }
     }
 }
 

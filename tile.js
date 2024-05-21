@@ -20,10 +20,20 @@ class Tile {
             this.updateSymbol("!");
         } // else - tile is cleared - nothing to do :}
     }
+
+    // get flag status
+    getFlagStatus() {
+        return this.flagged;
+    }
     
     // clears tile
     clearTile() {
         this.cleared = true;
+    }
+    
+    // gets clerance status
+    getClearanceStatus() {
+        return this.cleared;
     }
 
     // plants mine

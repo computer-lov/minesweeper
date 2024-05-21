@@ -19,7 +19,7 @@ class Grid extends Tile {
                 this.grid[row][col] = new Tile(row, col);
             }
         }
-    };
+    }
 
     // randmomize grid mines, number of mines to be planted must be provided
     randomizeGridMines(numMines, initCoords) {
@@ -31,7 +31,7 @@ class Grid extends Tile {
                 numMines--;
             }
         }
-    };
+    }
 
     // prints out grid
     displayGrid() {
@@ -44,7 +44,7 @@ class Grid extends Tile {
             console.log(tempArr.join(' '));
         }
         console.log();
-    };
+    }
 
     // determines number of adjacent mines, should return an integer
     // update this to be more efficent 
@@ -52,21 +52,29 @@ class Grid extends Tile {
     findAdjacentMines(row, col) {
         let adjMineCount = 0;
         // check left lower corner
-        if (row+1 < this.side && col-1 >= 0 && this.grid[row+1][col-1].getMineStatus()) adjMineCount++; 
+        if (row+1 < this.side && col-1 >= 0)
+             if (this.grid[row+1][col-1].getMineStatus()) adjMineCount++;
         // check left
-        if (col-1 >= 0 && this.grid[row][col-1].getMineStatus()) adjMineCount++;
+        if (col-1 >= 0)
+            if (this.grid[row][col-1].getMineStatus()) adjMineCount++;
         // check left upper corner
-        if (row-1 >= 0 && col-1 >= 0 && this.grid[row-1][col-1].getMineStatus()) adjMineCount++;
+        if (row-1 >= 0 && col-1 >= 0)
+            if (this.grid[row-1][col-1].getMineStatus()) adjMineCount++;
         // check above
-        if (row-1 >= 0 >= 0 && this.grid[row-1][col].getMineStatus()) adjMineCount++;
+        if (row-1 >= 0)
+            if (this.grid[row-1][col].getMineStatus()) adjMineCount++;
         // check right upper corner
-        if (row-1 >= 0 && col+1 < this.side && this.grid[row-1][col+1].getMineStatus()) adjMineCount++;
+        if (row-1 >= 0 && col+1 < this.side)
+            if (this.grid[row-1][col+1].getMineStatus()) adjMineCount++;
         // check right
-        if (col+1 < this.side && this.grid[row][col+1].getMineStatus()) adjMineCount++;
+        if (col+1 < this.side)
+            if (this.grid[row][col+1].getMineStatus()) adjMineCount++;
         // check right lower corner
-        if (row+1 < this.side && col+1 < this.side && this.grid[row+1][col+1].getMineStatus()) adjMineCount++;
+        if (row+1 < this.side && col+1 < this.side) 
+            if (this.grid[row+1][col+1].getMineStatus()) adjMineCount++;
         // check below
-        if (row+1 < this.side && this.grid[row+1][col].getMineStatus()) adjMineCount++;
+        if (row+1 < this.side) 
+            if (this.grid[row+1][col].getMineStatus()) adjMineCount++;
         
         this.grid[row][col].setAdjMines(adjMineCount);
         this.grid[row][col].updateSymbol(this.grid[row][col].getAdjMines());
@@ -100,9 +108,11 @@ class Grid extends Tile {
 
     // victory 
     victory() {
+        let count = 0;
         for (let row = 0; row < this.side; row++) {
             for (let col = 0; col < this.side; col++) {
-                if (this.grid[row][col] == "_") return false;
+                // console.log(this.grid[row][col].getCurrSymbol());
+                if (this.grid[row][col].getCurrSymbol() == "_") return false;
             }
         }
         console.log("\nCONGRATULATIONS\nVICTORY ACHIEVED\nWELL DONE");
