@@ -96,8 +96,18 @@ class Grid extends Tile {
     // clears grid
     clearGrid() {
         this.grid = [];
-    };
+    }
 
+    // victory 
+    victory() {
+        for (let row = 0; row < this.side; row++) {
+            for (let col = 0; col < this.side; col++) {
+                if (this.grid[row][col] == "_") return false;
+            }
+        }
+        console.log("\nCONGRATULATIONS\nVICTORY ACHIEVED\nWELL DONE");
+        return true;
+    }
 }
 
 module.exports = Grid;

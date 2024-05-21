@@ -142,6 +142,8 @@ function game(grid, gameParams) {
         if (currAction == "F") flagsRemaining = flagAction(grid, crds, flagsRemaining);
         else if (currAction == "C") gameOver = clearAction(grid, crds);
         else if (currAction == "X") gameOver = quit();
+        
+        if (grid.victory()) gameOver = true;
     }
 }
 
