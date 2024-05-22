@@ -9,6 +9,7 @@ function invalidMessage() {
     console.log("Invalid input. Please try again.\n");
 }
 
+// validates user input, user input must be within validArr
 function validateInput(validArr, currVal) {
     for (let i = 0; i < validArr.length; i++) {
         if (validArr[i] == currVal) return true;
@@ -16,6 +17,7 @@ function validateInput(validArr, currVal) {
     return false;
 }
 
+// gets preferred difficulty from user
 function getDifficulty() {
     let diffStr = "Please select difficulty: \n [1] Easy (36 tiles) \n [2] Medium (64 tiles) \n [3] Hard (100 tiles) \n";
     let isValid = false;
@@ -28,6 +30,7 @@ function getDifficulty() {
     return diffNum;
 }
 
+// sets up game parameters based on difficulty
 function setGameParams(difficulty) {
     let size;
     let mines;
@@ -51,6 +54,7 @@ function setGameParams(difficulty) {
     return [size, mines, flags, n];
 }
 
+// gets desired action from user
 function displayActions() {
     let actionStr = "Please select action: \n [F] flag or unflag tile \n [C] clear tile \n [X] exit game \n";
     let isValid = false;
@@ -64,6 +68,7 @@ function displayActions() {
     return action;
 }
 
+// gets coordinates from user
 function getCrds(maxLength) {
     let crdStr = "\nPlease enter desired tile coordinates: \n";
     let isValid = false;
@@ -81,6 +86,8 @@ function getCrds(maxLength) {
     return [row, col];
 }
 
+// first move of game
+// slightly different as player cannot lose on first move
 function firstMove(grid, gameParams) {
     console.log("\nPlease select a tile\nThe first one you select will not have a mine underneath it\n");
     grid.displayGrid();
@@ -90,6 +97,7 @@ function firstMove(grid, gameParams) {
     grid.displayGrid();
 }
 
+// handles flag action - user flagging / unflagging tile
 function flagAction(grid, crds, flagsRemaining) {
     let currTile = grid.getTile(crds[0], crds[1]);
     if ((flagsRemaining > 0 || currTile.getFlagStatus()) && !currTile.getClearanceStatus()) {
@@ -105,6 +113,7 @@ function flagAction(grid, crds, flagsRemaining) {
     return flagsRemaining;
 };
 
+// handles clear action - user attempting to clear a file
 function clearAction(grid, crds) {
     let currTile = grid.getTile(crds[0], crds[1]);
     if (currTile.getClearanceStatus()) {
@@ -124,11 +133,13 @@ function clearAction(grid, crds) {
     }
 };
 
+// quit game early
 function quit() {
     console.log("Okay. Goodbye : )");
     return true;
 }
 
+// main function that loops continually until game is over
 function game(grid, gameParams) {
     // first move of game
     firstMove(grid, gameParams);
@@ -136,7 +147,10 @@ function game(grid, gameParams) {
 
     let gameOver = false;
     while (!gameOver) {
-        if (grid.victory()) gameOver = true;
+        if (grid.victory()) {
+            console.log("\nCONGRATULATIONS\nVICTORY ACHIEVED\nWELL DONE");
+            gameOver = true;
+        }
         else {
             console.log("Flags Remaining: " + flagsRemaining);
             let currAction = displayActions();

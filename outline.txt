@@ -37,6 +37,7 @@
     ! - flag
     * - mine
     1, 2, 3 for numbers
+    X - for misplaced flag
 
     // EXAMPLE
     _ _ _ _ _ _ _ _

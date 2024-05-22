@@ -48,7 +48,6 @@ class Grid extends Tile {
 
     // determines number of adjacent mines, should return an integer
     // update this to be more efficent 
-    // CAUSES CRASH AROUND BOUNDARIES
     findAdjacentMines(row, col) {
         let adjMineCount = 0;
         // check left lower corner
@@ -80,12 +79,26 @@ class Grid extends Tile {
         this.grid[row][col].updateSymbol(this.grid[row][col].getAdjMines());
     }
 
+    // reveal all mines
+    revealAnswers() {
+        for (let row = 0; row < this.side; row++) {
+            for (let col = 0; col < this.side; col++) {
+                if (this.grid[row][col].getMineStatus()) {
+                    this.grid[row][col].clearTile();
+                    this.grid[row][col].updateSymbol("*");
+                } else if (this.grid[row][col].getFlagStatus()) {
+                    this.grid[row][col].clearTile();
+                    this.grid[row][col].updateSymbol("X");
+                }
+            }
+        }
+    }
+
     // attempts to clear tile, returns true if successful
     attemptClearTile(row, col) {
         // check if mine
         if (this.grid[row][col].getMineStatus()) {
-            this.grid[row][col].clearTile();
-            this.grid[row][col].updateSymbol("*");
+            this.revealAnswers();
             return false;
         }
         // determine number of adjacent mines
@@ -108,14 +121,12 @@ class Grid extends Tile {
 
     // victory 
     victory() {
-        let count = 0;
         for (let row = 0; row < this.side; row++) {
             for (let col = 0; col < this.side; col++) {
                 // console.log(this.grid[row][col].getCurrSymbol());
                 if (this.grid[row][col].getCurrSymbol() == "_") return false;
             }
         }
-        console.log("\nCONGRATULATIONS\nVICTORY ACHIEVED\nWELL DONE");
         return true;
     }
 }
