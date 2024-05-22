@@ -62,7 +62,7 @@ function displayActions() {
         console.log(actionStr);
         action = prompt();
         action = action.toUpperCase();
-        if (validateInput(["F", "C", "X"]), action) isValid = true;
+        if (validateInput(["F", "C", "X"], action)) isValid = true;
         else invalidMessage();
     }
     return action;
@@ -93,6 +93,7 @@ function firstMove(grid, gameParams) {
     grid.displayGrid();
     let initCrds = getCrds();
     grid.randomizeGridMines(gameParams[1], initCrds);
+    grid.calculateAdjacentMines();
     grid.attemptClearTile(initCrds[0], initCrds[1]);
     grid.displayGrid();
 }
@@ -154,11 +155,14 @@ function game(grid, gameParams) {
         else {
             console.log("Flags Remaining: " + flagsRemaining);
             let currAction = displayActions();
-            let crds = getCrds(gameParams[3]);
             
-            if (currAction == "F") flagsRemaining = flagAction(grid, crds, flagsRemaining);
-            else if (currAction == "C") gameOver = clearAction(grid, crds);
-            else if (currAction == "X") gameOver = quit();
+            if (currAction == "F") {
+                let crds = getCrds(gameParams[3]);
+                flagsRemaining = flagAction(grid, crds, flagsRemaining);
+            } else if (currAction == "C") {
+                let crds = getCrds(gameParams[3]);
+                gameOver = clearAction(grid, crds);
+            } else if (currAction == "X") gameOver = quit();
         }
     }
 }

@@ -9,6 +9,9 @@ class Grid extends Tile {
         this.grid = [];
         this.size = size;
         this.side = math.sqrt(this.size);
+        this.directions = [[-1, -1], [-1, 0], [-1, 1],
+                            [0, -1],            [0, 1],
+                            [1, -1],  [1, 0],   [1, 1]];
     }
 
     // initializes grid of tiles
@@ -46,37 +49,27 @@ class Grid extends Tile {
         console.log();
     }
 
-    // determines number of adjacent mines, should return an integer
-    // update this to be more efficent 
-    findAdjacentMines(row, col) {
-        let adjMineCount = 0;
-        // check left lower corner
-        if (row+1 < this.side && col-1 >= 0)
-             if (this.grid[row+1][col-1].getMineStatus()) adjMineCount++;
-        // check left
-        if (col-1 >= 0)
-            if (this.grid[row][col-1].getMineStatus()) adjMineCount++;
-        // check left upper corner
-        if (row-1 >= 0 && col-1 >= 0)
-            if (this.grid[row-1][col-1].getMineStatus()) adjMineCount++;
-        // check above
-        if (row-1 >= 0)
-            if (this.grid[row-1][col].getMineStatus()) adjMineCount++;
-        // check right upper corner
-        if (row-1 >= 0 && col+1 < this.side)
-            if (this.grid[row-1][col+1].getMineStatus()) adjMineCount++;
-        // check right
-        if (col+1 < this.side)
-            if (this.grid[row][col+1].getMineStatus()) adjMineCount++;
-        // check right lower corner
-        if (row+1 < this.side && col+1 < this.side) 
-            if (this.grid[row+1][col+1].getMineStatus()) adjMineCount++;
-        // check below
-        if (row+1 < this.side) 
-            if (this.grid[row+1][col].getMineStatus()) adjMineCount++;
-        
-        this.grid[row][col].setAdjMines(adjMineCount);
-        this.grid[row][col].updateSymbol(this.grid[row][col].getAdjMines());
+    isValidTile(row, col) {
+        return row >= 0 && row < this.side && col >= 0 && col < this.side;
+    }
+
+    // improved function to calculate mines upfront
+    calculateAdjacentMines() {
+        for (let row = 0; row < this.side; row++) {
+            for (let col = 0; col < this.side; col++) {
+                if (this.grid[row][col].getMineStatus()) continue;
+                let adjacentMines = 0;
+                // loops through directions array created above
+                for (let [dx, dy] of this.directions) {
+                    let adjRow = row + dx;
+                    let adjCol = col + dy;
+                    if (this.isValidTile(adjRow, adjCol) && this.grid[adjRow][adjCol].getMineStatus()) {
+                        adjacentMines++;
+                    }
+                }
+                this.grid[row][col].setAdjMines(adjacentMines);
+            }
+        }
     }
 
     // reveal all mines
@@ -104,7 +97,7 @@ class Grid extends Tile {
         // determine number of adjacent mines
         else {
             this.grid[row][col].clearTile();
-            this.findAdjacentMines(row, col);
+            this.grid[row][col].updateSymbol(this.grid[row][col].getAdjMines());
             return true;
         }
     }
