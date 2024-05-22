@@ -57,22 +57,21 @@ class Grid extends Tile {
     calculateAdjacentMines() {
         for (let row = 0; row < this.side; row++) {
             for (let col = 0; col < this.side; col++) {
-                if (this.grid[row][col].getMineStatus()) continue;
-                let adjacentMines = 0;
-                // loops through directions array created above
-                for (let [dx, dy] of this.directions) {
-                    let adjRow = row + dx;
-                    let adjCol = col + dy;
-                    if (this.isValidTile(adjRow, adjCol) && this.grid[adjRow][adjCol].getMineStatus()) {
-                        adjacentMines++;
+                if (!this.grid[row][col].getMineStatus()) {
+                    let adjacentMines = 0;
+                    // loops through directions array created above
+                    for (let [dx, dy] of this.directions) {
+                        if (this.isValidTile(row+dx, col+dy) && this.grid[row+dx][col+dy].getMineStatus()) {
+                            adjacentMines++;
+                        }
                     }
+                    this.grid[row][col].setAdjMines(adjacentMines);
                 }
-                this.grid[row][col].setAdjMines(adjacentMines);
             }
         }
     }
 
-    // reveal all mines
+    // reveal all mines and incorrectly placed flags
     revealAnswers() {
         for (let row = 0; row < this.side; row++) {
             for (let col = 0; col < this.side; col++) {
@@ -87,6 +86,29 @@ class Grid extends Tile {
         }
     }
 
+    // attempts to clear tile, if tile is a zero also clears surrounding tiles
+    attemptClearNeighborTiles(row, col) {
+        const queue = [[row, col]];
+        while (queue.length > 0) {
+            // removes current row/col from queue because we've seen it
+            const [currRow, currCol] = queue.shift();
+
+            // clears and sets tile symbol
+            this.grid[currRow][currCol].clearTile();
+            this.grid[currRow][currCol].updateSymbol(this.grid[currRow][currCol].getAdjMines());
+
+            // if were at a 0 we need to scan other tiles
+            if (this.grid[currRow][currCol].getAdjMines() == 0) {
+                for (let [dx, dy] of this.directions) {
+                    if (this.isValidTile(currRow+dx, currCol+dy) && !this.grid[currRow+dx][currCol+dy].getClearanceStatus()) {
+                        queue.push([currRow+dx, currCol+dy])
+                    }
+                }
+            }
+        }
+    }
+
+
     // attempts to clear tile, returns true if successful
     attemptClearTile(row, col) {
         // check if mine
@@ -94,10 +116,9 @@ class Grid extends Tile {
             this.revealAnswers();
             return false;
         }
-        // determine number of adjacent mines
+        // clear / place adj mines on tile and attempt to clear neigbors if no adjacent mines
         else {
-            this.grid[row][col].clearTile();
-            this.grid[row][col].updateSymbol(this.grid[row][col].getAdjMines());
+            this.attemptClearNeighborTiles(row, col);
             return true;
         }
     }
